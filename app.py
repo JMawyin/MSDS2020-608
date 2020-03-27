@@ -11,14 +11,14 @@ from dash_table import DataTable
 import dash_bootstrap_components as dbc
 
 
-from chart_studio.plotly import plot, iplot
+#from chart_studio.plotly import plot, iplot
 import numpy as np
 import plotly
-import chart_studio
-import chart_studio.plotly as py
-from chart_studio.plotly import iplot
+#import chart_studio
+#import chart_studio.plotly as py
+#from chart_studio.plotly import iplot
 import plotly.offline as offline
-chart_studio.tools.set_credentials_file(username='JMawyin', api_key='dVsYl2tiVcuatLpgjJjA')
+#chart_studio.tools.set_credentials_file(username='JMawyin', api_key='dVsYl2tiVcuatLpgjJjA')
 shaz13_custom_style = "mapbox://styles/shaz13/cjiog1iqa1vkd2soeu5eocy4i"
 Token = "pk.eyJ1Ijoiam1hd3lpbiIsImEiOiJjazg4OGp0NDYwMmdwM2dxcHUxNWRhYzZyIn0.MCCGSyF0KPdvun3rTob3dw"
 
@@ -27,6 +27,8 @@ Token = "pk.eyJ1Ijoiam1hd3lpbiIsImEiOiJjazg4OGp0NDYwMmdwM2dxcHUxNWRhYzZyIn0.MCCG
 external_stylesheets = [dbc.themes.BOOTSTRAP]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
+server = app.server
 
 external_css = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 for css in external_css:    app.css.append_css({"external_url": css})
@@ -90,6 +92,12 @@ markdown_final= '''
     * How to work with Dash, Flask and Plotly.
     * Figured out how to align elements together in a row and not sequentially.
     * How to map datapoints from the NY Tree survey dataset and style them.
+    * How to deploy the Dash app online using Heroku. Figuring it out took as long as writing the app itself.
+    
+* Things to be improved:
+    * Aligment of objects.
+    * Re-centering of map view.
+    * More insightful metrics to track tree health.
 '''
 
 
@@ -100,10 +108,10 @@ app.layout = html.Div(
     dcc.Markdown(children=intro),    
     dcc.Markdown(children=markdown_text1), 
         
-    html.Label('Select a Boro Name to Filter for the map to populate: '),
+    html.Label('Select a borough Name to Filter for the map to populate: '),
     dcc.Dropdown(id='dropdown', options=[
         {'label': i, 'value': i} for i in trees.boroname.unique()
-    ], multi=False, placeholder='Filter by boroname...'),
+    ], value = 'Queens',multi=False, placeholder='Filter by boroname...'),
         
         
         dbc.Row(
@@ -120,7 +128,7 @@ app.layout = html.Div(
     html.Label('Select a Stewardship level to Filter and for the plot to populate: '),
     dcc.Dropdown(id='steward_select', options=[
         {'label': i, 'value': i} for i in trees.steward.unique()
-    ], multi=False, placeholder='Filter by Stewardship Level...'),
+    ], value = 'None', multi=False, placeholder='Filter by Stewardship Level...'),
     #html.Div(id='table2'),
     dcc.Graph(id='bar'),
     dcc.Markdown(children=markdown_text2_1),
@@ -243,7 +251,7 @@ def display_table(steward_select_value):
     barlayout = go.Layout(
     width=900,
     height=600,
-    title = "Test")
+    title = "Effect of Stewardship on Tree Health Across NYC")
     
     return {'data': bardata, 'layout': barlayout}
     
